@@ -142,7 +142,7 @@ CRON="
 INSTALL_JSON="
 {
     \"common\" : {
-    \"client_id\" : \"${ILIAS_CLIENT_NAME}\",
+        \"client_id\" : \"${ILIAS_CLIENT_NAME}\",
         \"master_password\" : \"${ILIAS_SETUP_PASSWORD}\"
     },
     \"database\" : {
