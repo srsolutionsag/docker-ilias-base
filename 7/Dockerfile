@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript \
     imagemagick \
     ffmpeg \
+    libldap-common \
     libldap-dev \
     libpng-dev \
     libjpeg-dev \
