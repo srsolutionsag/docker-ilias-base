@@ -146,6 +146,7 @@ INSTALL_JSON="
         \"master_password\" : \"${ILIAS_SETUP_PASSWORD}\"
     },
     \"database\" : {
+        \"type\" : \"${ILIAS_DB_TYPE}\",
         \"host\" : \"${ILIAS_DB_HOST}\",
         \"database\" : \"${ILIAS_DB_NAME}\",
         \"user\" : \"${ILIAS_DB_USER}\",
