@@ -9,6 +9,7 @@ function mkpass () {
 # Set defaults
 ILIAS_AUTO_SETUP="${ILIAS_AUTO_SETUP:=0}"
 ILIAS_DEVMODE="${ILIAS_DEVMODE:=0}"
+ILIAS_INSTALL_ARGUMENTS=${ILIAS_INSTALL_ARGUMENTS:=}
 
 ILIAS_CLIENT_NAME="${ILIAS_CLIENT_NAME:=default}"
 ILIAS_HOST_NAME="${ILIAS_HOST_NAME:=$(hostname)}"
@@ -202,7 +203,8 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
         if ! $(${mysql} -e "SELECT COUNT(*) FROM settings" &> /dev/null); then
             # Run setup
             echo "Running setup"
-            php setup/cli.php install -y ${ILIAS_INSTALL_CONFIG_PATH}
+            php setup/cli.php install -y ${ILIAS_INSTALL_ARGUMENTS} \
+                ${ILIAS_INSTALL_CONFIG_PATH}
 
             # Fix permissions
             chown -R www-data:www-data ${ILIAS_ILIASDATA_PATH}
