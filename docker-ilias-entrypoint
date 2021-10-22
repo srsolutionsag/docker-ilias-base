@@ -139,7 +139,7 @@ CRON="
 */10 * * * * root su www-data -s /bin/sh -c \"/usr/local/bin/php /var/www/html/cron/cron.php root ${ILIAS_ROOT_PASSWORD} ${ILIAS_CLIENT_NAME}\" 1>/proc/1/fd/1 2>/proc/1/fd/2
 "
 
-echo "${PHP_INI}" > /usr/local/etc/php/conf.d/ilias.ini
+echo "${PHP_INI}" > ${PHP_INI_DIR}/conf.d/ilias.ini
 echo "${CRON}" > /etc/cron.d/ilias
 
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
