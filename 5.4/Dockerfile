@@ -65,3 +65,4 @@ COPY install-ilias /usr/local/bin/
 
 ENTRYPOINT ["docker-ilias-entrypoint"]
 CMD ["apache2-foreground"]
+EXPOSE 80

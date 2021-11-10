@@ -74,3 +74,4 @@ COPY docker-ilias-entrypoint-setup-cli /usr/local/bin/docker-ilias-entrypoint
 
 ENTRYPOINT ["docker-ilias-entrypoint"]
 CMD ["apache2-foreground"]
+EXPOSE 80
