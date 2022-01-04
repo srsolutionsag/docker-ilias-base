@@ -48,10 +48,17 @@ RUN a2enmod \
     rewrite
 
 ENV OPENSSL_CONF=/etc/ssl/
-RUN curl -o phantomjs.tar.bz2 -SL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
-    && tar -xjf phantomjs.tar.bz2 \
-    && mv phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
-    && rm -r phantomjs-2.1.1-linux-x86_64 phantomjs.tar.bz2
+RUN case $(uname -m) in \
+    i686 | x86_64) \
+        curl -o phantomjs.tar.bz2 -SL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-$(uname -m).tar.bz2 \
+        && tar -xjf phantomjs.tar.bz2 \
+        && mv phantomjs-2.1.1-linux-$(uname -m)/bin/phantomjs /usr/local/bin/phantomjs \
+        && rm -r phantomjs-2.1.1-linux-$(uname -m) phantomjs.tar.bz2 \
+        ;; \
+    *) \
+        echo "Architecture not supported by phantomjs, skipping installation" \
+        ;; \
+    esac
 
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --version=1.10.17 --install-dir=/usr/local/bin --filename=composer
