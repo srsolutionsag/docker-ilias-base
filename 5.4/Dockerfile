@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     node-less \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
 
-RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+RUN docker-php-ext-configure ldap --with-libdir=lib/$(uname -m)-linux-gnu/ && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install \
     gd \
