@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         zip \
         node-less \
+        wkhtmltopdf \
         xfonts-75dpi \
         xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
@@ -49,10 +50,6 @@ RUN a2enmod \
     expires \
     headers \
     rewrite
-
-RUN curl -o wkhtmltox.deb -SL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb \
-    && dpkg -i wkhtmltox.deb \
-    && rm wkhtmltox.deb
 
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --version=1.10.17 --install-dir=/usr/local/bin --filename=composer
