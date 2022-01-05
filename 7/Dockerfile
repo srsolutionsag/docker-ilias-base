@@ -50,6 +50,7 @@ RUN a2enmod \
     headers \
     rewrite
 
+RUN ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --version=1.10.17 --install-dir=/usr/local/bin --filename=composer
 
