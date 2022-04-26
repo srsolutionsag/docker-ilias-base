@@ -16,7 +16,7 @@ ILIAS_HOST_NAME="${ILIAS_HOST_NAME:=$(hostname)}"
 ILIAS_TIMEZONE="${ILIAS_TIMEZONE:=Europe/Berlin}"
 ILIAS_MEMORY_LIMIT="${ILIAS_MEMORY_LIMIT:=300M}"
 ILIAS_MAX_UPLOAD_SIZE="${ILIAS_MAX_UPLOAD_SIZE:=200M}"
-ILIAS_GC_MAXLIFETIME="${ILIAS_GC_MAXLIFETIME:=1440}"
+ILIAS_SESSION_LIFETIME="${ILIAS_SESSION_LIFETIME:=1440}"
 ILIAS_ERRORS_PATH="${ILIAS_ERRORS_PATH:=${ILIAS_ILIASDATA_PATH}/errors}"
 
 ILIAS_ROOT_PASSWORD="${ILIAS_ROOT_PASSWORD:=$(pwgen -1 16)}"
@@ -112,7 +112,7 @@ skin = ${ILIAS_DEFAULT_SKIN}
 style = ${ILIAS_DEFAULT_STYLE}
 
 [session]
-expire = 1800
+expire = ${ILIAS_SESSION_LIFETIME}
 
 [system]
 ROOT_FOLDER_ID = 1
@@ -137,7 +137,7 @@ max_input_time = 900
 max_input_vars = 10000
 upload_max_filesize = ${ILIAS_MAX_UPLOAD_SIZE}
 post_max_size = ${ILIAS_MAX_UPLOAD_SIZE}
-session.gc_maxlifetime = ${ILIAS_GC_MAXLIFETIME}
+session.gc_maxlifetime = ${ILIAS_SESSION_LIFETIME}
 "
 CRON="
 */10 * * * * root su www-data -s /bin/sh -c \"/usr/local/bin/php /var/www/html/cron/cron.php root ${ILIAS_ROOT_PASSWORD} ${ILIAS_CLIENT_NAME}\" 1>/proc/1/fd/1 2>/proc/1/fd/2
