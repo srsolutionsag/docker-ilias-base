@@ -52,7 +52,7 @@ RUN a2enmod \
 
 RUN ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 RUN curl -sS https://getcomposer.org/installer \
-    | php -- --version=1.10.17 --install-dir=/usr/local/bin --filename=composer
+    | php -- --1 --install-dir=/usr/local/bin --filename=composer
 
 ENV ILIAS_WWW_PATH=/var/www/html
 ENV ILIAS_DATA_PATH=/var/www/html/data
