@@ -41,7 +41,7 @@ RUN docker-php-ext-configure ldap --with-libdir=lib/$(uname -m)-linux-gnu/ \
       docker-php-ext-install xmlrpc \
       ;; \
     8.0*) \
-      pecl install pecl install "channel://pecl.php.net/xmlrpc-1.0.0RC2" \
+      pecl install pecl install "channel://pecl.php.net/xmlrpc-1.0.0RC3" \
           && docker-php-ext-enable xmlrpc \
       ;; \
     esac
