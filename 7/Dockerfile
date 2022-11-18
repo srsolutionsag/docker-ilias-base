@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ghostscript \
     imagemagick \
+    libmagickwand-dev \
     ffmpeg \
     libldap-common \
     libldap-dev \
@@ -24,6 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xfonts-75dpi \
     xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
+
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
 RUN docker-php-ext-configure ldap --with-libdir=lib/$(uname -m)-linux-gnu/ && \
     case ${PHP_VERSION} in \
