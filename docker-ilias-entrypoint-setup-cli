@@ -223,11 +223,9 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
                 WHERE usr_id = 6"
 
             echo "Setting skin/style"
-            ${mysql} -e "UPDATE usr_pref SET
-                    value = '${ILIAS_DEFAULT_SKIN}'
+            ${mysql} -e "UPDATE usr_pref SET value = '${ILIAS_DEFAULT_SKIN}'
                 WHERE keyword = 'skin'"
-            ${mysql} -e "UPDATE usr_pref SET
-                    value = '${ILIAS_DEFAULT_STYLE}'
+            ${mysql} -e "UPDATE usr_pref SET value = '${ILIAS_DEFAULT_STYLE}'
                 WHERE keyword = 'style'"
 
             echo "======================================================="
