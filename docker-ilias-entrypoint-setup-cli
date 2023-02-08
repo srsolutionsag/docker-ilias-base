@@ -8,8 +8,10 @@ function mkpass () {
 
 # Set defaults
 ILIAS_AUTO_SETUP="${ILIAS_AUTO_SETUP:=0}"
+ILIAS_AUTO_UPDATE="${ILIAS_AUTO_UPDATE:=$ILIAS_AUTO_SETUP}"
 ILIAS_DEVMODE="${ILIAS_DEVMODE:=0}"
 ILIAS_INSTALL_ARGUMENTS=${ILIAS_INSTALL_ARGUMENTS:=}
+ILIAS_UPDATE_ARGUMENTS=${ILIAS_UPDATE_ARGUMENTS:=$ILIAS_INSTALL_ARGUMENTS}
 
 ILIAS_CLIENT_NAME="${ILIAS_CLIENT_NAME:=default}"
 ILIAS_HOST_NAME="${ILIAS_HOST_NAME:=$(hostname)}"
@@ -238,6 +240,11 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
             echo "======================================================="
         else
             echo "ILIAS already installed"
+
+            if [ "${ILIAS_AUTO_UPDATE}" -eq "1" ]; then
+                echo "Updating installation"
+                php setup/cli.php update -y ${ILIAS_UPDATE_ARGUMENTS}
+            fi
         fi
     fi
 
