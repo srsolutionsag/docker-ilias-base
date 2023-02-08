@@ -210,12 +210,8 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
 
             # Run setup
             echo "Running setup"
-            php setup/cli.php install -y ${ILIAS_INSTALL_ARGUMENTS} \
-                ${ILIAS_INSTALL_CONFIG_PATH}
-
-            # Fix permissions
-            chown -R www-data:www-data ${ILIAS_ILIASDATA_PATH}
-            chown -R www-data:www-data ${ILIAS_DATA_PATH}
+            su www-data -s /bin/sh -c "php setup/cli.php install -y \
+                ${ILIAS_INSTALL_ARGUMENTS} ${ILIAS_INSTALL_CONFIG_PATH}"
 
             # Customize ilias
             echo "Setting root password"
