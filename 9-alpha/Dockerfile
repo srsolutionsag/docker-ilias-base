@@ -50,8 +50,6 @@ RUN a2enmod \
     rewrite
 
 RUN ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
-RUN curl -sS https://getcomposer.org/installer \
-    | php -- --2 --install-dir=/usr/local/bin --filename=composer
 
 ENV ILIAS_WWW_PATH=/var/www/html
 ENV ILIAS_DATA_PATH=/var/www/html/data

@@ -60,9 +60,6 @@ RUN case $(uname -m) in \
         ;; \
     esac
 
-RUN curl -sS https://getcomposer.org/installer \
-    | php -- --1 --install-dir=/usr/local/bin --filename=composer
-
 ENV ILIAS_WWW_PATH=/var/www/html
 ENV ILIAS_DATA_PATH=/var/www/html/data
 ENV ILIAS_ILIASDATA_PATH=/var/iliasdata/ilias
