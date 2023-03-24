@@ -21,7 +21,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         zip \
         node-less \
-        wkhtmltopdf \
         xfonts-75dpi \
         xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
@@ -48,8 +47,6 @@ RUN a2enmod \
     expires \
     headers \
     rewrite
-
-RUN ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 ENV ILIAS_WWW_PATH=/var/www/html
 ENV ILIAS_DATA_PATH=/var/www/html/data
