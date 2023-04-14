@@ -156,6 +156,7 @@ INSTALL_JSON="
         \"database\" : \"${ILIAS_DB_NAME}\",
         \"user\" : \"${ILIAS_DB_USER}\",
         \"password\" : \"${ILIAS_DB_PASSWORD}\",
+        \"path_to_db_dump\" : \"${ILIAS_DB_DUMP}\",
         \"create_database\": false
     },
     \"filesystem\" : {
@@ -177,9 +178,10 @@ INSTALL_JSON="
 echo "${PHP_INI}" > ${PHP_INI_DIR}/conf.d/ilias.ini
 echo "${CRON}" > /etc/cron.d/ilias
 
+# Dump install config
+echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
+
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
-    # Dump install config
-    echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
 
     if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         mysql="mysql
@@ -204,10 +206,6 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
         echo "Database connection established"
 
         if ! $(${mysql} -e "SELECT COUNT(*) FROM settings" &> /dev/null); then
-            # Import database
-            echo "Installing database"
-            ${mysql} < ${ILIAS_DB_DUMP}
-
             # Run setup
             echo "Running setup"
             su www-data -s /bin/sh -c "php setup/cli.php install -y \
