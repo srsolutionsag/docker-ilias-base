@@ -14,5 +14,4 @@ jobs:
       - name: Build the ilias-base--docker Docker image
         run: |
                docker build --rm --pull -f 7/Dockerfile --build-arg PHP_VERSION=7.4-apache  -t minervis/ilias-base:7-php7.4-apache .
-               docker run minervis/ilias-base:7-php7.4-apache
                docker push minervis/ilias-base:7-php7.4-apache
