@@ -1,0 +1,18 @@
+name: publish
+on: [workflow_dispatch]
+jobs:
+  publish-ilias-base-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the ilias-base--docker Docker image
+        run: |
+               docker build --rm --pull -f 7/Dockerfile --build-arg PHP_VERSION=7.4-apache  -t minervis/ilias-base:7-php7.4-apache
+               docker run ghcr.io/minervis/ilias-base:7-php7.4-apache
+               docker push ghcr.io/minervis/ilias-base:7-php7.4-apache
