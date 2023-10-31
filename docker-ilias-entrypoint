@@ -22,7 +22,6 @@ ILIAS_SESSION_LIFETIME="${ILIAS_SESSION_LIFETIME:=1800}"
 ILIAS_ERRORS_PATH="${ILIAS_ERRORS_PATH:=${ILIAS_ILIASDATA_PATH}/errors}"
 
 ILIAS_ROOT_PASSWORD="${ILIAS_ROOT_PASSWORD:=$(pwgen -1 16)}"
-ILIAS_SETUP_PASSWORD="${ILIAS_SETUP_PASSWORD:=$(pwgen -1 16)}"
 
 ILIAS_DB_TYPE="${ILIAS_DB_TYPE:=innodb}"
 ILIAS_DB_HOST="${ILIAS_DB_HOST:=mysql}"
@@ -51,9 +50,6 @@ inifile = client.ini.php
 datadir = ${ILIAS_ILIASDATA_PATH}
 default = ${ILIAS_CLIENT_NAME}
 list = 0
-
-[setup]
-pass = $(mkpass ${ILIAS_SETUP_PASSWORD})
 
 [tools]
 convert = /usr/bin/convert
@@ -148,7 +144,6 @@ INSTALL_JSON="
 {
     \"common\" : {
         \"client_id\" : \"${ILIAS_CLIENT_NAME}\",
-        \"master_password\" : \"${ILIAS_SETUP_PASSWORD}\"
     },
     \"database\" : {
         \"type\" : \"${ILIAS_DB_TYPE}\",
@@ -229,7 +224,6 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
             echo
             echo "User:           root"
             echo "Password:       ${ILIAS_ROOT_PASSWORD}"
-            echo "Setup Password: ${ILIAS_SETUP_PASSWORD}"
             echo "======================================================="
         else
             echo "ILIAS already installed"
