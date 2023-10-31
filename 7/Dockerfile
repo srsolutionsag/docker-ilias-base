@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libxslt-dev \
     libzip-dev \
+    mariadb-client \
     pwgen \
     unzip \
     zip \
