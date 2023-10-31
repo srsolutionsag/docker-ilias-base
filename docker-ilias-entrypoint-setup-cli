@@ -178,10 +178,9 @@ INSTALL_JSON="
 echo "${PHP_INI}" > ${PHP_INI_DIR}/conf.d/ilias.ini
 echo "${CRON}" > /etc/cron.d/ilias
 
-# Dump install config
-echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
-
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
+    # Dump install config
+    echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
 
     if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         mysql="mysql
