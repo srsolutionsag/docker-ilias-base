@@ -8,13 +8,15 @@ function mkpass () {
 
 # Set defaults
 ILIAS_AUTO_SETUP="${ILIAS_AUTO_SETUP:=0}"
-ILIAS_SKIP_UPDATE="${ILIAS_SKIP_UPDATE:=0}"
+ILIAS_AUTO_UPDATE="${ILIAS_AUTO_UPDATE:=$ILIAS_AUTO_SETUP}"
 ILIAS_DEVMODE="${ILIAS_DEVMODE:=0}"
+ILIAS_INSTALL_ARGUMENTS=${ILIAS_INSTALL_ARGUMENTS:=}
+ILIAS_UPDATE_ARGUMENTS=${ILIAS_UPDATE_ARGUMENTS:=$ILIAS_INSTALL_ARGUMENTS}
 
 ILIAS_CLIENT_NAME="${ILIAS_CLIENT_NAME:=default}"
 ILIAS_HOST_NAME="${ILIAS_HOST_NAME:=$(hostname)}"
 ILIAS_TIMEZONE="${ILIAS_TIMEZONE:=Europe/Berlin}"
-ILIAS_MEMORY_LIMIT="${ILIAS_MEMORY_LIMIT:=200M}"
+ILIAS_MEMORY_LIMIT="${ILIAS_MEMORY_LIMIT:=300M}"
 ILIAS_MAX_UPLOAD_SIZE="${ILIAS_MAX_UPLOAD_SIZE:=200M}"
 ILIAS_SESSION_LIFETIME="${ILIAS_SESSION_LIFETIME:=1800}"
 ILIAS_ERRORS_PATH="${ILIAS_ERRORS_PATH:=${ILIAS_ILIASDATA_PATH}/errors}"
@@ -31,6 +33,8 @@ ILIAS_DB_DUMP="${ILIAS_DB_DUMP:=setup/sql/ilias3.sql}"
 
 ILIAS_DEFAULT_SKIN="${ILIAS_DEFAULT_SKIN:=default}"
 ILIAS_DEFAULT_STYLE="${ILIAS_DEFAULT_STYLE:=delos}"
+
+ILIAS_INSTALL_CONFIG_PATH="${ILIAS_INSTALL_CONFIG_PATH:=/tmp/install.json}"
 
 # Define Templates
 ILIAS_INI="
@@ -140,38 +144,42 @@ session.gc_maxlifetime = ${ILIAS_SESSION_LIFETIME}
 CRON="
 */10 * * * * root su www-data -s /bin/sh -c \"/usr/local/bin/php ${ILIAS_WWW_PATH}/cron/cron.php root ${ILIAS_ROOT_PASSWORD} ${ILIAS_CLIENT_NAME}\" 1>/proc/1/fd/1 2>/proc/1/fd/2
 "
+INSTALL_JSON="
+{
+    \"common\" : {
+        \"client_id\" : \"${ILIAS_CLIENT_NAME}\",
+        \"master_password\" : \"${ILIAS_SETUP_PASSWORD}\"
+    },
+    \"database\" : {
+        \"type\" : \"${ILIAS_DB_TYPE}\",
+        \"host\" : \"${ILIAS_DB_HOST}\",
+        \"database\" : \"${ILIAS_DB_NAME}\",
+        \"user\" : \"${ILIAS_DB_USER}\",
+        \"password\" : \"${ILIAS_DB_PASSWORD}\",
+        \"create_database\": false
+    },
+    \"filesystem\" : {
+        \"data_dir\" : \"${ILIAS_ILIASDATA_PATH}\"
+    },
+    \"http\" : {
+        \"path\" : \"http://${ILIAS_HOST_NAME}\"
+    },
+    \"systemfolder\" : {
+        \"contact\" : {
+            \"firstname\" : \"Systemadministrator\",
+            \"lastname\" : \"ILIAS\",
+            \"email\" : \"noreply@example.com\"
+        }
+    }
+}
+"
 
 echo "${PHP_INI}" > ${PHP_INI_DIR}/conf.d/ilias.ini
 echo "${CRON}" > /etc/cron.d/ilias
 
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
-    if [ ! -d "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}" ]; then
-        echo "Preparing data directories"
-        # Create data directories
-        mkdir -p "${ILIAS_ILIASDATA_PATH}/${ILIAS_CLIENT_NAME}/files"
-        mkdir -p "${ILIAS_ILIASDATA_PATH}/${ILIAS_CLIENT_NAME}/forum"
-        mkdir -p "${ILIAS_ILIASDATA_PATH}/${ILIAS_CLIENT_NAME}/lm_data"
-        mkdir -p "${ILIAS_ILIASDATA_PATH}/${ILIAS_CLIENT_NAME}/mail"
-
-        mkdir -p "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/css"
-        mkdir -p "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/lm_data"
-        mkdir -p "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/mobs"
-        mkdir -p "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/usr_images"
-
-        # Fix permissions
-        chown -R www-data:www-data ${ILIAS_ILIASDATA_PATH} || true
-        chown -R www-data:www-data ${ILIAS_DATA_PATH} || true
-    fi
-
-    # Add ini files
-    echo "${ILIAS_CLIENT_INI}" > "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
-    chown www-data:www-data "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
-
-    echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
-
-    # Touch ilias log
-    touch ${ILIAS_ILIASDATA_PATH}/ilias.log
-    chown www-data:www-data ${ILIAS_ILIASDATA_PATH}/ilias.log
+    # Dump install config
+    echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
 
     if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         mysql="mysql
@@ -182,7 +190,7 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
 
         # Wait for database
         tries=0
-        maxTries=10
+        maxTries=6
         until ${mysql} -e "SELECT VERSION();" &> /dev/null; do
             tries=$((tries + 1))
             if [ $tries -gt $maxTries ]; then
@@ -191,7 +199,7 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
                 exit 1
             fi
             echo "Cannot connect to database, waiting"
-            sleep 3
+            sleep 10
         done
         echo "Database connection established"
 
@@ -202,7 +210,8 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
 
             # Run setup
             echo "Running setup"
-            install-ilias ${ILIAS_CLIENT_NAME} > /dev/null
+            su www-data -s /bin/sh -c "php setup/cli.php install -y \
+                ${ILIAS_INSTALL_ARGUMENTS} ${ILIAS_INSTALL_CONFIG_PATH}"
 
             # Customize ilias
             echo "Setting root password"
@@ -212,11 +221,9 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
                 WHERE usr_id = 6"
 
             echo "Setting skin/style"
-            ${mysql} -e "UPDATE usr_pref SET
-                    value = '${ILIAS_DEFAULT_SKIN}'
+            ${mysql} -e "UPDATE usr_pref SET value = '${ILIAS_DEFAULT_SKIN}'
                 WHERE keyword = 'skin'"
-            ${mysql} -e "UPDATE usr_pref SET
-                    value = '${ILIAS_DEFAULT_STYLE}'
+            ${mysql} -e "UPDATE usr_pref SET value = '${ILIAS_DEFAULT_STYLE}'
                 WHERE keyword = 'style'"
 
             echo "======================================================="
@@ -229,8 +236,30 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
             echo "======================================================="
         else
             echo "ILIAS already installed"
+
+            if [ "${ILIAS_AUTO_UPDATE}" -eq "1" ]; then
+                if php setup/cli.php status | egrep '(update|hotfix|custom_update)_required: true' &> /dev/null; then
+                    echo "Update required, running setup"
+                    su www-data -s /bin/sh -c "php setup/cli.php update -y \
+                        ${ILIAS_UPDATE_ARGUMENTS}"
+                else
+                    echo "No update required"
+                fi
+            fi
         fi
     fi
+
+    # Add ini files
+    if [ -d "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}" ]; then
+        echo "${ILIAS_CLIENT_INI}" > "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
+        chown www-data:www-data "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
+    fi
+    echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
+    chown www-data:www-data "${ILIAS_WWW_PATH}/ilias.ini.php"
+
+    # Touch ilias log
+    touch ${ILIAS_ILIASDATA_PATH}/ilias.log
+    chown www-data:www-data ${ILIAS_ILIASDATA_PATH}/ilias.log
 else
     echo "ILIAS setup skipped"
 fi

@@ -72,7 +72,7 @@ RUN mkdir ${ILIAS_DATA_PATH} \
     && chmod 775 ${ILIAS_DATA_PATH}
 VOLUME ${ILIAS_DATA_PATH}
 
-COPY docker-ilias-entrypoint-setup-cli /usr/local/bin/docker-ilias-entrypoint
+COPY docker-ilias-entrypoint /usr/local/bin/docker-ilias-entrypoint
 
 ENTRYPOINT ["docker-ilias-entrypoint"]
 CMD ["apache2-foreground"]
