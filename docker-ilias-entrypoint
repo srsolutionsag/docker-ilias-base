@@ -152,6 +152,7 @@ INSTALL_JSON="
         \"user\" : \"${ILIAS_DB_USER}\",
         \"password\" : \"${ILIAS_DB_PASSWORD}\",
         \"path_to_db_dump\" : \"${ILIAS_DB_DUMP}\",
+        \"port\" : \"${ILIAS_DB_PORT}\",
         \"create_database\": false
     },
     \"filesystem\" : {
