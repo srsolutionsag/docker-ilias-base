@@ -1,0 +1,10 @@
+diff --git a/Imagick.stub.php b/Imagick.stub.php
+index 804c015..49da938 100644
+--- a/Imagick.stub.php
++++ b/Imagick.stub.php
+@@ -1669,4 +1669,5 @@ proto bool Imagick::setImageBluePrimary(float x, float y, float z) */
+ 	public function setOrientation(int $orientation): bool {}
+ #endif
+ 
++#endif
+ }
