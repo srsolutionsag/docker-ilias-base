@@ -230,13 +230,8 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
             echo "ILIAS already installed"
 
             if [ "${ILIAS_AUTO_UPDATE}" -eq "1" ]; then
-                if php setup/cli.php status | egrep '(update|hotfix|custom_update)_required: true' &> /dev/null; then
-                    echo "Update required, running setup"
-                    su www-data -s /bin/sh -c "php setup/cli.php update -y \
-                        ${ILIAS_UPDATE_ARGUMENTS}"
-                else
-                    echo "No update required"
-                fi
+                echo "Update requested, running setup"
+                su www-data -s /bin/sh -c "php setup/cli.php update -y ${ILIAS_UPDATE_ARGUMENTS}"
             fi
         fi
     fi
