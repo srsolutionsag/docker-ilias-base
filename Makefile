@@ -10,7 +10,7 @@ IMAGES = \
 	10-alpha/php8.2-apache \
 	10-alpha/php8.3-apache
 
-LATEST = 8/php8.0-apache
+LATEST = 9/php8.2-apache
 
 variant = $$(basename $1)
 branch  = $$(basename $$(dirname $1))
