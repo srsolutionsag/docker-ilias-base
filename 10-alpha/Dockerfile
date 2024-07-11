@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pwgen \
         unzip \
         zip \
-        node-less \
         xfonts-75dpi \
         xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
