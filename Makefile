@@ -1,5 +1,7 @@
 IMAGE_NAME ?= srsolutions/ilias-base
 
+PLATFORM ?= linux/amd64
+
 IMAGES = \
 	7/php7.3-apache \
 	7/php7.4-apache \
@@ -27,7 +29,7 @@ $(IMAGES):
 	@branch=$(call branch,$@)
 	@php=$(call php,$$variant)
 	@echo "Building $(IMAGE_NAME):$$branch-$$variant"
-	docker build --pull \
+	docker build --platform $(PLATFORM) --pull \
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
