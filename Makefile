@@ -27,7 +27,7 @@ $(IMAGES):
 	@branch=$(call branch,$@)
 	@php=$(call php,$$variant)
 	@echo "Building $(IMAGE_NAME):$$branch-$$variant"
-	docker build --rm --pull \
+	docker build --pull \
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
