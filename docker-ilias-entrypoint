@@ -7,6 +7,7 @@ function mkpass () {
 }
 
 # Set defaults
+ILIAS_DUMP_AUTOLOAD="${ILIAS_DUMP_AUTOLOAD:=0}"
 ILIAS_AUTO_SETUP="${ILIAS_AUTO_SETUP:=0}"
 ILIAS_AUTO_UPDATE="${ILIAS_AUTO_UPDATE:=$ILIAS_AUTO_SETUP}"
 ILIAS_DEVMODE="${ILIAS_DEVMODE:=0}"
@@ -173,6 +174,11 @@ INSTALL_JSON="
 
 echo "${PHP_INI}" > ${PHP_INI_DIR}/conf.d/ilias.ini
 echo "${CRON}" > /etc/cron.d/ilias
+
+if [ "${ILIAS_DUMP_AUTOLOAD}" -eq 1 ]; then
+    echo "Running composer dump-autoload"
+    composer dump-autoload
+fi
 
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
     # Dump install config

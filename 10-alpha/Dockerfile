@@ -56,6 +56,9 @@ RUN a2enmod \
     headers \
     rewrite
 
+RUN curl -sS https://getcomposer.org/installer \
+    | php -- --2 --install-dir=/usr/local/bin --filename=composer
+
 ENV ILIAS_WWW_PATH=/var/www/html
 ENV ILIAS_DATA_PATH=/var/www/html/public/data
 ENV ILIAS_ILIASDATA_PATH=/var/iliasdata/ilias
