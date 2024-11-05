@@ -1,6 +1,6 @@
 IMAGE_NAME ?= srsolutions/ilias-base
 
-PLATFORM ?= linux/amd64
+PLATFORM ?= linux/amd64,linux/arm64
 
 IMAGES = \
 	7/php7.3-apache \
@@ -29,25 +29,22 @@ $(IMAGES):
 	@branch=$(call branch,$@)
 	@php=$(call php,$$variant)
 	@echo "Building $(IMAGE_NAME):$$branch-$$variant"
-	docker build --platform $(PLATFORM) --pull \
+	docker buildx build --platform $(PLATFORM) --pull \
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
+		--push \
 		.
 
 .PHONY: tag
-tag: $(LATEST)
+tag:
 	@for i in $(IMAGES); do \
 		variant=$(call variant,$$i);
 		branch=$(call branch,$$i);
 		tag=$(call tag,$$i);
 		echo "Tagging $(IMAGE_NAME):$$tag as $(IMAGE_NAME):$$branch"; \
-		docker tag $(IMAGE_NAME):$$tag $(IMAGE_NAME):$$branch; \
+		docker buildx imagetools create $(IMAGE_NAME):$$tag --tag $(IMAGE_NAME):$$branch; \
 	done
 	@latest=$(IMAGE_NAME):$(call tag,$(LATEST))
 	@echo "Tagging $$latest as latest"
-	docker tag $$latest $(IMAGE_NAME):latest
-
-.PHONY: push
-push:
-	docker push -a $(IMAGE_NAME)
+	docker buildx imagetools create $$latest --tag $(IMAGE_NAME):latest
