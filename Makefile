@@ -1,6 +1,7 @@
 IMAGE_NAME ?= srsolutions/ilias-base
 
 PLATFORM ?= linux/amd64,linux/arm64
+OUTPUT ?= type=image,push=true
 
 IMAGES = \
 	7/php7.3-apache \
@@ -33,7 +34,7 @@ $(IMAGES):
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
-		--push \
+		--output $(OUTPUT) \
 		.
 
 .PHONY: tag
