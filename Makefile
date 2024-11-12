@@ -64,3 +64,17 @@ local: PLATFORM=local
 local: BUILDX_BUILDER=default
 local: OUTPUT=type=image,push=false
 local: all
+
+.PHONY: pull
+pull:
+	@for i in $(IMAGES); do \
+		variant=$(call variant,$$i);
+		branch=$(call branch,$$i);
+		tag=$(call tag,$$i);
+		echo "Pulling $(IMAGE_NAME):$$tag"; \
+		docker pull $(IMAGE_NAME):$$tag; \
+		echo "Pulling $(IMAGE_NAME):$$branch"; \
+		docker pull $(IMAGE_NAME):$$branch; \
+	done
+	@echo "Pulling $(IMAGE_NAME):latest"
+	docker pull $(IMAGE_NAME):latest
