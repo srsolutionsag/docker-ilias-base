@@ -39,13 +39,23 @@ $(IMAGES):
 
 .PHONY: tag
 tag:
+	tag () {
+		case "${OUTPUT}" in
+			*push=false*)
+				docker tag $$1 $$2
+				;;
+			*push=true*)
+				docker buildx imagetools create $$1 --tag $$2
+				;;
+		esac
+	}
 	@for i in $(IMAGES); do \
 		variant=$(call variant,$$i);
 		branch=$(call branch,$$i);
 		tag=$(call tag,$$i);
 		echo "Tagging $(IMAGE_NAME):$$tag as $(IMAGE_NAME):$$branch"; \
-		docker buildx imagetools create $(IMAGE_NAME):$$tag --tag $(IMAGE_NAME):$$branch; \
+		tag $(IMAGE_NAME):$$tag $(IMAGE_NAME):$$branch; \
 	done
 	@latest=$(IMAGE_NAME):$(call tag,$(LATEST))
 	@echo "Tagging $$latest as latest"
-	docker buildx imagetools create $$latest --tag $(IMAGE_NAME):latest
+	tag $$latest $(IMAGE_NAME):latest
