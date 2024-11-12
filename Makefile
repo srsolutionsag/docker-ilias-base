@@ -59,3 +59,8 @@ tag:
 	@latest=$(IMAGE_NAME):$(call tag,$(LATEST))
 	@echo "Tagging $$latest as latest"
 	tag $$latest $(IMAGE_NAME):latest
+
+local: PLATFORM=local
+local: BUILDX_BUILDER=default
+local: OUTPUT=type=image,push=false
+local: all
