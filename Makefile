@@ -21,15 +21,16 @@ tag     = $$(echo $1 | sed 's|/|-|')
 php     = $$(echo $1 | sed -E 's|.*php(.*)|\1|')
 
 .ONESHELL:
+.SILENT:
 
 all: $(IMAGES) tag
 
 .PHONY: $(IMAGES)
 $(IMAGES):
-	@variant=$(call variant,$@)
-	@branch=$(call branch,$@)
-	@php=$(call php,$$variant)
-	@echo "Building $(IMAGE_NAME):$$branch-$$variant"
+	variant=$(call variant,$@)
+	branch=$(call branch,$@)
+	php=$(call php,$$variant)
+	echo "Building $(IMAGE_NAME):$$branch-$$variant"
 	docker buildx build --platform $(PLATFORM) --pull \
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
@@ -49,15 +50,15 @@ tag:
 				;;
 		esac
 	}
-	@for i in $(IMAGES); do \
+	for i in $(IMAGES); do \
 		variant=$(call variant,$$i);
 		branch=$(call branch,$$i);
 		tag=$(call tag,$$i);
 		echo "Tagging $(IMAGE_NAME):$$tag as $(IMAGE_NAME):$$branch"; \
 		tag $(IMAGE_NAME):$$tag $(IMAGE_NAME):$$branch; \
 	done
-	@latest=$(IMAGE_NAME):$(call tag,$(LATEST))
-	@echo "Tagging $$latest as latest"
+	latest=$(IMAGE_NAME):$(call tag,$(LATEST))
+	echo "Tagging $$latest as latest"
 	tag $$latest $(IMAGE_NAME):latest
 
 local: PLATFORM=local
@@ -67,7 +68,7 @@ local: all
 
 .PHONY: pull
 pull:
-	@for i in $(IMAGES); do \
+	for i in $(IMAGES); do \
 		variant=$(call variant,$$i);
 		branch=$(call branch,$$i);
 		tag=$(call tag,$$i);
@@ -76,5 +77,5 @@ pull:
 		echo "Pulling $(IMAGE_NAME):$$branch"; \
 		docker pull $(IMAGE_NAME):$$branch; \
 	done
-	@echo "Pulling $(IMAGE_NAME):latest"
+	echo "Pulling $(IMAGE_NAME):latest"
 	docker pull $(IMAGE_NAME):latest
