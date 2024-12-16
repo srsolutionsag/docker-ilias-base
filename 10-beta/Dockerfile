@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Compile imagick from source to patch unterminated preprocessor conditions error
 # See https://github.com/Imagick/imagick/issues/640
-COPY 10-alpha/imagick_fix_unterminated_preprocessor_conditions.patch /tmp/
+COPY 10-beta/imagick_fix_unterminated_preprocessor_conditions.patch /tmp/
 RUN curl -SL 'https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz' -o /tmp/imagick.tar.gz \
     && mkdir -p /tmp/imagick \
     && tar -xf /tmp/imagick.tar.gz -C /tmp/imagick --strip-components=1 \
