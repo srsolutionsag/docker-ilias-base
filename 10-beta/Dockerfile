@@ -24,16 +24,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
 
-# Compile imagick from source to patch unterminated preprocessor conditions error
+# Compile imagick from source to prevent unterminated preprocessor conditions error
 # See https://github.com/Imagick/imagick/issues/640
-COPY 10-beta/imagick_fix_unterminated_preprocessor_conditions.patch /tmp/
-RUN curl -SL 'https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz' -o /tmp/imagick.tar.gz \
-    && mkdir -p /tmp/imagick \
-    && tar -xf /tmp/imagick.tar.gz -C /tmp/imagick --strip-components=1 \
-    && patch -d /tmp/imagick -p1 -i /tmp/imagick_fix_unterminated_preprocessor_conditions.patch \
+RUN curl -SL 'https://github.com/Imagick/imagick/archive/28f27044e435a2b203e32675e942eb8de620ee58.tar.gz' -o /tmp/imagick.tar.gz \
+    && tar -xf /tmp/imagick.tar.gz -C /tmp --one-top-level --strip-components=1 \
     && docker-php-ext-configure /tmp/imagick \
     && docker-php-ext-install /tmp/imagick \
-    && rm -r /tmp/imagick_fix_unterminated_preprocessor_conditions.patch /tmp/imagick.tar.gz /tmp/imagick
+    && rm -r /tmp/imagick.tar.gz /tmp/imagick
 
 RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 
