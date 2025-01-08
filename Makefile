@@ -2,6 +2,8 @@ IMAGE_NAME ?= srsolutions/ilias-base
 
 PLATFORM ?= linux/amd64,linux/arm64
 OUTPUT ?= type=image,push=true
+CACHE_FROM ?= type=local,src=.cache
+CACHE_TO ?= type=local,dest=.cache
 
 IMAGES = \
 	7/php7.3-apache \
@@ -35,6 +37,8 @@ $(IMAGES):
 		-f $$branch/Dockerfile \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
+		--cache-from $(CACHE_FROM) \
+		--cache-to $(CACHE_TO) \
 		--output $(OUTPUT) \
 		.
 
