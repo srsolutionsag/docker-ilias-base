@@ -6,6 +6,16 @@ function mkpass () {
   echo -n ${pass} | md5sum | awk '{print $1}'
 }
 
+function dump_ini_files () {
+    echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
+    chown www-data:www-data "${ILIAS_WWW_PATH}/ilias.ini.php"
+
+    if [ -d "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}" ]; then
+        echo "${ILIAS_CLIENT_INI}" > "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
+        chown www-data:www-data "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
+    fi
+}
+
 # Set defaults
 ILIAS_DUMP_AUTOLOAD="${ILIAS_DUMP_AUTOLOAD:=0}"
 ILIAS_AUTO_SETUP="${ILIAS_AUTO_SETUP:=0}"
@@ -181,12 +191,7 @@ if [ "${ILIAS_DUMP_AUTOLOAD}" -eq 1 ]; then
 fi
 
 # Add ini files
-if [ -d "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}" ]; then
-    echo "${ILIAS_CLIENT_INI}" > "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
-    chown www-data:www-data "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
-fi
-echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
-chown www-data:www-data "${ILIAS_WWW_PATH}/ilias.ini.php"
+dump_ini_files
 
 # Touch ilias log
 touch ${ILIAS_ILIASDATA_PATH}/ilias.log
@@ -237,6 +242,9 @@ if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
                 WHERE keyword = 'skin'"
             ${mysql} -e "UPDATE usr_pref SET value = '${ILIAS_DEFAULT_STYLE}'
                 WHERE keyword = 'style'"
+
+            # Overwrite generated ini files
+            dump_ini_files
 
             echo "======================================================="
             echo "ILIAS installed successfully!"
