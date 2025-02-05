@@ -25,7 +25,7 @@ ILIAS_INSTALL_ARGUMENTS=${ILIAS_INSTALL_ARGUMENTS:=}
 ILIAS_UPDATE_ARGUMENTS=${ILIAS_UPDATE_ARGUMENTS:=$ILIAS_INSTALL_ARGUMENTS}
 
 ILIAS_CLIENT_NAME="${ILIAS_CLIENT_NAME:=default}"
-ILIAS_HOST_NAME="${ILIAS_HOST_NAME:=$(hostname)}"
+ILIAS_HTTP_PATH="${ILIAS_HTTP_PATH:=http://$(hostname)}"
 ILIAS_TIMEZONE="${ILIAS_TIMEZONE:=Europe/Berlin}"
 ILIAS_MEMORY_LIMIT="${ILIAS_MEMORY_LIMIT:=300M}"
 ILIAS_MAX_UPLOAD_SIZE="${ILIAS_MAX_UPLOAD_SIZE:=200M}"
@@ -50,7 +50,7 @@ ILIAS_INSTALL_CONFIG_PATH="${ILIAS_INSTALL_CONFIG_PATH:=/tmp/install.json}"
 ILIAS_INI="
 ; <?php exit; ?>
 [server]
-http_path = http://${ILIAS_HOST_NAME}
+http_path = ${ILIAS_HTTP_PATH}
 absolute_path = ${ILIAS_WWW_PATH}
 presetting = 
 timezone = ${ILIAS_TIMEZONE}
@@ -170,7 +170,7 @@ INSTALL_JSON="
         \"data_dir\" : \"${ILIAS_ILIASDATA_PATH}\"
     },
     \"http\" : {
-        \"path\" : \"http://${ILIAS_HOST_NAME}\"
+        \"path\" : \"${ILIAS_HTTP_PATH}\"
     },
     \"systemfolder\" : {
         \"contact\" : {
