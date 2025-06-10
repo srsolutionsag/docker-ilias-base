@@ -29,13 +29,13 @@ $(IMAGES):
 	branch=$(call branch,$@)
 	php=$(call php,$$variant)
 	echo "Building $(IMAGE_NAME):$$branch-$$variant"
-	docker buildx build $$branch \
+	docker buildx build \
 		--pull \
 		--platform $(PLATFORM) \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
 		--output $(OUTPUT) \
-		.
+		$$branch
 
 .PHONY: tag
 tag:
