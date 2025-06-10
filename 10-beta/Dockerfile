@@ -70,7 +70,7 @@ RUN mkdir -p ${ILIAS_DATA_PATH} \
     && chmod 775 ${ILIAS_DATA_PATH}
 VOLUME ${ILIAS_DATA_PATH}
 
-COPY docker-ilias-entrypoint-new /usr/local/bin/docker-ilias-entrypoint
+COPY docker-ilias-entrypoint /usr/local/bin/docker-ilias-entrypoint
 
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-enabled/000-default.conf
 
