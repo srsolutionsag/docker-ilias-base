@@ -149,7 +149,7 @@ post_max_size = ${ILIAS_MAX_UPLOAD_SIZE}
 session.gc_maxlifetime = ${ILIAS_SESSION_LIFETIME}
 "
 CRON="
-*/10 * * * * root su www-data -s /bin/sh -c \"/usr/local/bin/php ${ILIAS_WWW_PATH}/cli/cron.php root ${ILIAS_ROOT_PASSWORD} ${ILIAS_CLIENT_NAME}\" 1>/proc/1/fd/1 2>/proc/1/fd/2
+*/10 * * * * root su www-data -s /bin/sh -c \"/usr/local/bin/php ${ILIAS_WWW_PATH}/cli/cron.php run-jobs root ${ILIAS_CLIENT_NAME}\" 1>/proc/1/fd/1 2>/proc/1/fd/2
 "
 INSTALL_JSON="
 {
