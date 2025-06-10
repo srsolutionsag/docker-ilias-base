@@ -31,7 +31,7 @@ $(IMAGES):
 	echo "Building $(IMAGE_NAME):$$branch-$$variant"
 	docker buildx build $$branch \
 		--pull \
-		--platform $(PLATFORM)
+		--platform $(PLATFORM) \
 		--build-arg PHP_VERSION=$$php \
 		-t $(IMAGE_NAME):$$branch-$$variant \
 		--output $(OUTPUT) \
