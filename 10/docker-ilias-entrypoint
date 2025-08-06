@@ -56,7 +56,7 @@ presetting =
 timezone = ${ILIAS_TIMEZONE}
 
 [clients]
-path = data
+path = public/data
 inifile = client.ini.php
 datadir = ${ILIAS_ILIASDATA_PATH}
 default = ${ILIAS_CLIENT_NAME}
