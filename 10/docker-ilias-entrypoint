@@ -198,8 +198,10 @@ touch ${ILIAS_ILIASDATA_PATH}/ilias.log
 chown www-data:www-data ${ILIAS_ILIASDATA_PATH}/ilias.log
 
 if [ "${ILIAS_AUTO_SETUP}" -eq "1" ]; then
-    # Dump install config
-    echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
+    if [ ! -f "${ILIAS_INSTALL_CONFIG_PATH}" ]; then
+        # Dump install config
+        echo "${INSTALL_JSON}" > "${ILIAS_INSTALL_CONFIG_PATH}"
+    fi
 
     if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         mysql="mysql
