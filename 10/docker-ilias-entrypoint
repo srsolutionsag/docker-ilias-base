@@ -7,10 +7,11 @@ function mkpass () {
 }
 
 function dump_ini_files () {
-    echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
-    chown www-data:www-data "${ILIAS_WWW_PATH}/ilias.ini.php"
-
+    # Only dump ini files after first setup
     if [ -d "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}" ]; then
+        echo "${ILIAS_INI}" > "${ILIAS_WWW_PATH}/ilias.ini.php"
+        chown www-data:www-data "${ILIAS_WWW_PATH}/ilias.ini.php"
+
         echo "${ILIAS_CLIENT_INI}" > "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
         chown www-data:www-data "${ILIAS_DATA_PATH}/${ILIAS_CLIENT_NAME}/client.ini.php"
     fi
