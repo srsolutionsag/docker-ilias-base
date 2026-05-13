@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         xfonts-base \
     && rm -rf /var/lib/apt/* /var/cache/apt/*
 
-RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-7/policy.xml
+COPY policy-websafe.xml /etc/ImageMagick-7/policy.xml
 
 RUN docker-php-ext-configure ldap --with-libdir=lib/$(uname -m)-linux-gnu/ \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
